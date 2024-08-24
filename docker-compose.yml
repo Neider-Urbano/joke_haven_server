@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:4.4
+    container_name: mongodb-joke-app
+    ports:
+      - '27018:27017'
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - network-joke-app
+
+  app:
+    build: .
+    container_name: joke-back
+    ports:
+      - '5000:3000'
+    environment:
+      - PORT=3000
+      - MONGODB_URI=mongodb://mongodb:27018/jokes
+      - JWT_SECRET=dev-neider-2024
+    depends_on:
+      - mongodb
+    networks:
+      - network-joke-app
+
+networks:
+  network-joke-app:
+
+volumes:
+  mongo-data:
